@@ -4,20 +4,26 @@
 
 using namespace handeye;
 
-RigidTransform RigidTransform::from_matrix(const Eigen::Matrix4d &other)
-{
-    Eigen::Affine3d a(other);
+RigidTransform RigidTransform::from_matrix(const Eigen::Matrix4d &other) {
+    Eigen::Matrix3d R = other.block(0, 0, 3, 3);
 
-    Eigen::AngleAxisd r;
-    r.fromRotationMatrix(a.rotation());
-
-    Eigen::Translation3d t(a.translation());
+    Eigen::AngleAxisd r(R);
+    Eigen::Translation3d t(other.block(0, 3, 3, 1));
 
     return { r, t };
 }
 
 RigidTransform RigidTransform::from_affine(const Eigen::Affine3d &other) {
     return from_matrix(other.matrix());
+}
+
+RigidTransform RigidTransform::from_pose(const Eigen::Matrix<double, 6, 1> &other) {
+    Eigen::Vector3d t_vec = other.block<3, 1>(0, 0);
+    Eigen::Vector3d r_vec = other.block<3, 1>(3, 0);
+
+    Eigen::AngleAxisd r(r_vec.norm(), r_vec.normalized());
+    Eigen::Translation3d t(t_vec);
+    return { r, t };
 }
 
 Eigen::Vector3d RigidTransform::get_rotation_vector() const {
@@ -29,10 +35,12 @@ Eigen::Vector3d RigidTransform::get_translation_vector() const {
 }
 
 Eigen::Affine3d RigidTransform::get_affine_transform() const {
-    Eigen::Affine3d X = Eigen::Affine3d::Identity();
-    X.translate(get_translation_vector());
-    X.rotate(rotation.matrix());
-    return X;
+    Eigen::Matrix4d H = Eigen::Matrix4d::Identity();
+    
+    H.block<3, 3>(0, 0) = rotation.matrix();
+    H.block<3, 1>(0, 3) = translation.vector();
+
+    return Eigen::Affine3d(H);
 }
 
 bool handeye::estimate_hand_to_eye(

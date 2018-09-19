@@ -8,6 +8,7 @@ namespace handeye {
 
         static RigidTransform from_matrix(const Eigen::Matrix4d &other);
         static RigidTransform from_affine(const Eigen::Affine3d &other);
+        static RigidTransform from_pose(const Eigen::Matrix<double, 6, 1> &other);
 
         Eigen::Vector3d get_rotation_vector() const;
         Eigen::Vector3d get_translation_vector() const;
