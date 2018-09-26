@@ -5,10 +5,8 @@
 using namespace handeye;
 
 RigidTransform RigidTransform::from_matrix(const Eigen::Matrix4d &other) {
-    Eigen::Matrix3d R = other.block(0, 0, 3, 3);
-
-    Eigen::AngleAxisd r(R);
-    Eigen::Translation3d t(other.block(0, 3, 3, 1));
+    Eigen::AngleAxisd    r(other.block<3, 3>(0, 0));
+    Eigen::Translation3d t(other.block<3, 1>(0, 3));
 
     return { r, t };
 }
@@ -57,8 +55,8 @@ bool handeye::estimate_hand_to_eye(
     std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> tvecs1, tvecs2;
 
     for (size_t i = 1; i < N; i++) {
-        auto h2b = RigidTransform::from_affine(hand_to_base[0].get_affine_transform().inverse() * hand_to_base[i].get_affine_transform());
-        auto e2w = RigidTransform::from_affine(eye_to_world[0].get_affine_transform().inverse() * eye_to_world[i].get_affine_transform());
+        auto h2b = RigidTransform::from_affine(hand_to_base[i].get_affine_transform().inverse() * hand_to_base[0].get_affine_transform());
+        auto e2w = RigidTransform::from_affine(eye_to_world[i].get_affine_transform().inverse() * eye_to_world[0].get_affine_transform());
 
         rvecs1.push_back(h2b.get_rotation_vector());
         tvecs1.push_back(h2b.get_translation_vector());
