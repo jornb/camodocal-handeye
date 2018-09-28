@@ -53,7 +53,7 @@ write_basic_package_version_file(
 )
 
 configure_package_config_file(
-    ../cmake/LibHandEyeConfig.cmake.in
+    ../cmake/handeye-config.cmake.in
     handeye-config.cmake
     INSTALL_DESTINATION lib/cmake/handeye
     NO_CHECK_REQUIRED_COMPONENTS_MACRO
