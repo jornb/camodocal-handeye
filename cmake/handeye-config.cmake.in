@@ -3,5 +3,4 @@
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(Ceres 1.14 REQUIRED)
 
-include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
-#check_required_components("@PROJECT_NAME@")
+include("${CMAKE_CURRENT_LIST_DIR}/handeye-targets.cmake")

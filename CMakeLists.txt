@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
-project(handeye)
+
+include(CPack)
+
+set(LibHandEye_VERSION 1.0)
+project(handeye VERSION ${LibHandEye_VERSION})
 
 include (CMakePackageConfigHelpers)
 
-set(HANDEYE_VERSION 1.0)
 add_subdirectory(src)
